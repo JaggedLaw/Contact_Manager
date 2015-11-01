@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'unicorn'
 group :development, :test do
+  gem 'capybara'
   gem 'rspec-rails'
   # Use sqlite3 as the database for Active Record
   gem 'sqlite3'

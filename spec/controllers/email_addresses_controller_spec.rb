@@ -69,6 +69,9 @@ RSpec.describe EmailAddressesController, type: :controller do
 
   describe "POST #create" do
     context "with valid params" do
+
+      let(:figaro) { Person.create(first_name: 'Figaro', last_name: 'Smith')}
+      let(:valid_attributes) { {email: 'figaro@someplace', person_id: figaro.id}}
       it "creates a new EmailAddress" do
         expect {
           post :create, {:email_address => valid_attributes}, valid_session
@@ -81,9 +84,9 @@ RSpec.describe EmailAddressesController, type: :controller do
         expect(assigns(:email_address)).to be_persisted
       end
 
-      it "redirects to the created email_address" do
+      it "redirects to the email addresses person" do
         post :create, {:email_address => valid_attributes}, valid_session
-        expect(response).to redirect_to(EmailAddress.last)
+        expect(response).to redirect_to(figaro)
       end
     end
 
@@ -123,7 +126,7 @@ RSpec.describe EmailAddressesController, type: :controller do
       it "redirects to the email_address" do
         email_address = EmailAddress.create! valid_attributes
         put :update, {:id => email_address.to_param, :email_address => valid_attributes}, valid_session
-        expect(response).to redirect_to(email_address)
+        expect(response).to redirect_to(sara)
       end
     end
 
@@ -143,17 +146,21 @@ RSpec.describe EmailAddressesController, type: :controller do
   end
 
   describe "DELETE #destroy" do
-    it "destroys the requested email_address" do
-      email_address = EmailAddress.create! valid_attributes
-      expect {
-        delete :destroy, {:id => email_address.to_param}, valid_session
-      }.to change(EmailAddress, :count).by(-1)
-    end
+    context "with valid params" do
+      let(:sara) { Person.create(first_name: 'Sara', last_name: 'Jones')}
+      let(:valid_attributes) { {email: 'somename@yahoo.com', person_id: sara.id}}
+      it "destroys the requested email_address" do
+        email_address = EmailAddress.create! valid_attributes
+        expect {
+          delete :destroy, {:id => email_address.to_param}, valid_session
+        }.to change(EmailAddress, :count).by(-1)
+      end
 
-    it "redirects to the email_addresses list" do
-      email_address = EmailAddress.create! valid_attributes
-      delete :destroy, {:id => email_address.to_param}, valid_session
-      expect(response).to redirect_to(email_addresses_url)
+      it "redirects to the email_addresses list" do
+        email_address = EmailAddress.create! valid_attributes
+        delete :destroy, {:id => email_address.to_param}, valid_session
+        expect(response).to redirect_to(sara)
+      end
     end
   end
 
